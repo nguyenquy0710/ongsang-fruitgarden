@@ -192,7 +192,7 @@ async function loadGallery() {
     }
 
     try {
-        const response = await fetch('/assets/gallery.json');
+        const response = await fetch('/assets/images.json');
 
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -222,65 +222,43 @@ async function loadGallery() {
     }
 }
 
-// Helper function to validate hex color
-// Note: Only validates 6-digit hex colors (e.g., #ff0000), not 3-digit format (e.g., #f00)
-function isValidColor(color) {
-    return /^#[0-9A-Fa-f]{6}$/.test(color);
-}
-
 // Create a gallery item element from image data
 function createGalleryItem(image) {
     // Validate and sanitize input data
-    const safeCategory = String(image.category || '').slice(0, 50);
     const safeDescription = String(image.description || '').slice(0, 200);
     const safeTitle = String(image.title || '').slice(0, 100);
-    const safeEmoji = String(image.emoji || '').slice(0, 10);
-
-    // Validate colors or use safe defaults
-    const backgroundColor = isValidColor(image.backgroundColor) ? image.backgroundColor : '#e8f5e9';
-    const circleColor = isValidColor(image.circleColor) ? image.circleColor : '#66bb6a';
-    const textColor = isValidColor(image.textColor) ? image.textColor : '#2e7d32';
+    const safeAlt = String(image.alt || image.title || 'Gallery image').slice(0, 100);
+    const safeSrc = String(image.src || '').slice(0, 500);
 
     const item = document.createElement('div');
     item.className = 'gallery-item';
-    item.setAttribute('data-category', safeCategory);
     item.setAttribute('title', safeDescription);
 
-    // Create SVG using DOM methods for security
-    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    svg.setAttribute('viewBox', '0 0 400 300');
-
-    const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-    rect.setAttribute('width', '400');
-    rect.setAttribute('height', '300');
-    rect.setAttribute('fill', backgroundColor);
-
-    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-    circle.setAttribute('cx', '200');
-    circle.setAttribute('cy', '150');
-    circle.setAttribute('r', '60');
-    circle.setAttribute('fill', circleColor);
-
-    const emojiText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    emojiText.setAttribute('x', '200');
-    emojiText.setAttribute('y', '170');
-    emojiText.setAttribute('font-size', '50');
-    emojiText.setAttribute('text-anchor', 'middle');
-    emojiText.textContent = safeEmoji;
-
-    const titleText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    titleText.setAttribute('x', '200');
-    titleText.setAttribute('y', '260');
-    titleText.setAttribute('font-size', '16');
-    titleText.setAttribute('text-anchor', 'middle');
-    titleText.setAttribute('fill', textColor);
-    titleText.textContent = safeTitle;
-
-    svg.appendChild(rect);
-    svg.appendChild(circle);
-    svg.appendChild(emojiText);
-    svg.appendChild(titleText);
-    item.appendChild(svg);
+    // Create image element
+    const img = document.createElement('img');
+    img.src = safeSrc;
+    img.alt = safeAlt;
+    img.loading = 'lazy'; // Enable lazy loading for performance
+    
+    // Add error handling for images that fail to load
+    img.addEventListener('error', () => {
+        img.style.display = 'none';
+        const placeholder = document.createElement('div');
+        placeholder.className = 'image-placeholder';
+        placeholder.textContent = '🖼️ Không thể tải ảnh';
+        item.appendChild(placeholder);
+    });
+    
+    // Create caption if title exists
+    if (safeTitle) {
+        const caption = document.createElement('div');
+        caption.className = 'gallery-caption';
+        caption.textContent = safeTitle;
+        item.appendChild(img);
+        item.appendChild(caption);
+    } else {
+        item.appendChild(img);
+    }
 
     return item;
 }
