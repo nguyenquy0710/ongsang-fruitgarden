@@ -41,14 +41,14 @@ let lastScroll = 0;
 
 window.addEventListener('scroll', () => {
     const currentScroll = window.pageYOffset;
-    
+
     // Add shadow on scroll
     if (currentScroll > 50) {
         navbar.classList.add('scrolled');
     } else {
         navbar.classList.remove('scrolled');
     }
-    
+
     lastScroll = currentScroll;
 });
 
@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
         el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
         observer.observe(el);
     });
-    
+
     // Load gallery when DOM is ready
     loadGallery();
 });
@@ -105,19 +105,19 @@ document.addEventListener('DOMContentLoaded', () => {
 function highlightActiveNavLink() {
     const sections = document.querySelectorAll('section[id]');
     const navLinks = document.querySelectorAll('.nav-link');
-    
+
     let current = '';
     const scrollPosition = window.pageYOffset;
-    
+
     sections.forEach(section => {
         const sectionTop = section.offsetTop - 100;
         const sectionHeight = section.offsetHeight;
-        
+
         if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
             current = section.getAttribute('id');
         }
     });
-    
+
     navLinks.forEach(link => {
         link.classList.remove('active');
         if (link.getAttribute('href') === `#${current}`) {
@@ -133,7 +133,7 @@ window.addEventListener('load', highlightActiveNavLink);
 window.addEventListener('load', () => {
     document.body.style.opacity = '0';
     document.body.style.transition = 'opacity 0.5s ease';
-    
+
     setTimeout(() => {
         document.body.style.opacity = '1';
     }, 100);
@@ -162,21 +162,21 @@ serviceCards.forEach(card => {
     card.addEventListener('mouseenter', () => {
         card.style.transition = 'all 0.3s ease';
     });
-    
+
     card.addEventListener('mousemove', (e) => {
         const rect = card.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
-        
+
         const centerX = rect.width / 2;
         const centerY = rect.height / 2;
-        
+
         const rotateX = (y - centerY) / 20;
         const rotateY = (centerX - x) / 20;
-        
+
         card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-10px)`;
     });
-    
+
     card.addEventListener('mouseleave', () => {
         card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0)';
     });
@@ -185,33 +185,33 @@ serviceCards.forEach(card => {
 // Load and render gallery from JSON
 async function loadGallery() {
     const galleryGrid = document.getElementById('galleryGrid');
-    
+
     if (!galleryGrid) {
         console.error('Gallery grid element not found');
         return;
     }
-    
+
     try {
-        const response = await fetch('gallery.json');
-        
+        const response = await fetch('/assets/gallery.json');
+
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        
+
         const data = await response.json();
-        
+
         // Clear existing content using replaceChildren for consistency
         galleryGrid.replaceChildren();
-        
+
         // Create and append gallery items
         data.images.forEach(image => {
             const galleryItem = createGalleryItem(image);
             galleryGrid.appendChild(galleryItem);
         });
-        
+
         // Re-apply intersection observer for new items
         applyGalleryAnimations();
-        
+
     } catch (error) {
         console.error('Error loading gallery:', error);
         // Show user-friendly error message using DOM methods for security
@@ -235,39 +235,39 @@ function createGalleryItem(image) {
     const safeDescription = String(image.description || '').slice(0, 200);
     const safeTitle = String(image.title || '').slice(0, 100);
     const safeEmoji = String(image.emoji || '').slice(0, 10);
-    
+
     // Validate colors or use safe defaults
     const backgroundColor = isValidColor(image.backgroundColor) ? image.backgroundColor : '#e8f5e9';
     const circleColor = isValidColor(image.circleColor) ? image.circleColor : '#66bb6a';
     const textColor = isValidColor(image.textColor) ? image.textColor : '#2e7d32';
-    
+
     const item = document.createElement('div');
     item.className = 'gallery-item';
     item.setAttribute('data-category', safeCategory);
     item.setAttribute('title', safeDescription);
-    
+
     // Create SVG using DOM methods for security
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svg.setAttribute('viewBox', '0 0 400 300');
-    
+
     const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
     rect.setAttribute('width', '400');
     rect.setAttribute('height', '300');
     rect.setAttribute('fill', backgroundColor);
-    
+
     const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
     circle.setAttribute('cx', '200');
     circle.setAttribute('cy', '150');
     circle.setAttribute('r', '60');
     circle.setAttribute('fill', circleColor);
-    
+
     const emojiText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
     emojiText.setAttribute('x', '200');
     emojiText.setAttribute('y', '170');
     emojiText.setAttribute('font-size', '50');
     emojiText.setAttribute('text-anchor', 'middle');
     emojiText.textContent = safeEmoji;
-    
+
     const titleText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
     titleText.setAttribute('x', '200');
     titleText.setAttribute('y', '260');
@@ -275,13 +275,13 @@ function createGalleryItem(image) {
     titleText.setAttribute('text-anchor', 'middle');
     titleText.setAttribute('fill', textColor);
     titleText.textContent = safeTitle;
-    
+
     svg.appendChild(rect);
     svg.appendChild(circle);
     svg.appendChild(emojiText);
     svg.appendChild(titleText);
     item.appendChild(svg);
-    
+
     return item;
 }
 
@@ -293,18 +293,18 @@ function applyGalleryAnimations() {
         item.style.transform = 'translateY(30px)';
         item.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
         observer.observe(item);
-        
+
         // Re-apply click event for zoom effect
         item.addEventListener('click', () => {
             const isZoomed = item.classList.contains('zoomed');
-            
+
             // Reset all other items
             galleryItems.forEach(otherItem => {
                 if (otherItem !== item) {
                     otherItem.classList.remove('zoomed');
                 }
             });
-            
+
             // Toggle current item - add if not zoomed, remove if already zoomed
             if (isZoomed) {
                 item.classList.remove('zoomed');
