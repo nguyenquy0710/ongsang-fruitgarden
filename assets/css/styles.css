@@ -444,29 +444,324 @@ section {
     background: var(--white);
 }
 
+.gallery-page {
+    padding-top: 100px;
+    min-height: 100vh;
+}
+
 .gallery-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: var(--spacing-md);
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-lg);
+    max-width: 1400px;
+    margin: 0 auto;
+    perspective: 1500px;
 }
 
 .gallery-item {
+    position: relative;
     border-radius: var(--radius-lg);
     overflow: hidden;
-    box-shadow: 0 5px 20px var(--shadow);
-    transition: var(--transition);
+    box-shadow: 0 10px 30px var(--shadow);
     cursor: pointer;
+    background: var(--white);
+    transform-style: preserve-3d;
+    transition: transform 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
+    animation: fadeInFlip 0.8s ease-out backwards;
 }
 
+/* Staggered animation for gallery items */
+.gallery-item:nth-child(1) { animation-delay: 0.1s; }
+.gallery-item:nth-child(2) { animation-delay: 0.2s; }
+.gallery-item:nth-child(3) { animation-delay: 0.3s; }
+.gallery-item:nth-child(4) { animation-delay: 0.4s; }
+.gallery-item:nth-child(5) { animation-delay: 0.5s; }
+.gallery-item:nth-child(6) { animation-delay: 0.6s; }
+
+/* Page flip effect on hover */
 .gallery-item:hover {
+    transform: rotateY(-5deg) scale(1.05);
+    box-shadow: 0 15px 40px var(--shadow-hover);
+}
+
+/* Left side items flip differently */
+.gallery-item:nth-child(odd):hover {
+    transform: rotateY(5deg) scale(1.05);
+}
+
+.gallery-item.zoomed {
+    transform: scale(1.5);
+    z-index: 100;
+    box-shadow: 0 20px 60px var(--shadow-hover);
+}
+
+.gallery-item img {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    aspect-ratio: 4/3;
+    transition: transform 0.3s ease;
+}
+
+.gallery-item:hover img {
     transform: scale(1.05);
-    box-shadow: 0 10px 30px var(--shadow-hover);
 }
 
 .gallery-item svg {
     display: block;
     width: 100%;
     height: auto;
+}
+
+.gallery-caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+    color: var(--white);
+    padding: var(--spacing-sm);
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: opacity 0.3s ease;
+}
+
+.gallery-item:hover .gallery-caption {
+    opacity: 0.9;
+}
+
+.image-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+    background: var(--lightest-green);
+    color: var(--text-gray);
+    font-size: 1.2rem;
+}
+
+.gallery-error-message {
+    text-align: center;
+    color: var(--text-gray);
+    padding: var(--spacing-lg);
+    grid-column: 1 / -1;
+}
+
+/* Turn.js Flipbook Styles */
+.flipbook-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: var(--spacing-xs) auto;
+    padding: var(--spacing-xs);
+    perspective: 2000px;
+}
+
+.flipbook {
+    position: relative;
+    width: 800px;
+    height: 600px;
+    margin: 0 auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    transform-style: preserve-3d;
+}
+
+.flipbook .page {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    backface-visibility: hidden;
+    transform-style: preserve-3d;
+    transition: transform 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
+    transform-origin: left center;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+}
+
+.flipbook .page.active {
+    opacity: 1;
+    z-index: 2;
+}
+
+.flipbook .page.flipped {
+    transform: rotateY(-180deg);
+    z-index: 1;
+}
+
+.flipbook .page.flipping-out {
+    animation: flipOut 0.8s cubic-bezier(0.4, 0.0, 0.2, 1) forwards;
+    z-index: 3;
+}
+
+.flipbook .page.flipping-in {
+    animation: flipIn 0.8s cubic-bezier(0.4, 0.0, 0.2, 1) forwards;
+    z-index: 3;
+}
+
+@keyframes flipOut {
+    0% {
+        transform: rotateY(0deg);
+    }
+    100% {
+        transform: rotateY(-180deg);
+    }
+}
+
+@keyframes flipIn {
+    0% {
+        transform: rotateY(-180deg);
+    }
+    100% {
+        transform: rotateY(0deg);
+    }
+}
+
+.flipbook .page-content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-lg);
+}
+
+.flipbook .page-content img {
+    max-width: 90%;
+    max-height: 70%;
+    object-fit: contain;
+    border-radius: var(--radius-md);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.flipbook .page-caption {
+    text-align: center;
+    margin-top: var(--spacing-md);
+    padding: var(--spacing-sm);
+    max-width: 80%;
+}
+
+.flipbook .page-caption h3 {
+    color: var(--primary-green);
+    font-size: 1.5rem;
+    margin-bottom: var(--spacing-xs);
+}
+
+.flipbook .page-caption p {
+    color: var(--text-gray);
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.flipbook .cover-page,
+.flipbook .back-cover-page {
+    background: linear-gradient(135deg, var(--primary-green), var(--primary-orange));
+    color: var(--white);
+}
+
+.flipbook .cover-page .page-content,
+.flipbook .back-cover-page .page-content {
+    text-align: center;
+}
+
+.flipbook .cover-page h2 {
+    font-size: 3rem;
+    margin-bottom: var(--spacing-md);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.flipbook .cover-page p,
+.flipbook .back-cover-page p {
+    font-size: 1.5rem;
+    margin: var(--spacing-sm) 0;
+}
+
+.flipbook .page-hint {
+    font-size: 1rem !important;
+    opacity: 0.8;
+    margin-top: var(--spacing-lg) !important;
+}
+
+.flipbook .back-cover-page .emoji {
+    font-size: 4rem !important;
+}
+
+.flipbook-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--spacing-md);
+    /* margin-top: var(--spacing-xl); */
+}
+
+.flip-btn {
+    background: var(--primary-orange);
+    color: var(--white);
+    border: none;
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: var(--transition);
+    box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3);
+    font-weight: 500;
+}
+
+.flip-btn:hover {
+    background: var(--secondary-orange);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 152, 0, 0.4);
+}
+
+.flip-btn:active {
+    transform: translateY(0);
+}
+
+.page-display {
+    font-size: 1.2rem;
+    color: var(--text-color);
+    font-weight: 600;
+    min-width: 140px;
+    text-align: center;
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: var(--lightest-green);
+    border-radius: var(--radius-md);
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+    .flipbook {
+        width: 90vw;
+        height: calc(90vw * 0.75);
+    }
+    
+    .flipbook .cover-page h2 {
+        font-size: 2rem;
+    }
+    
+    .flipbook .page-caption h3 {
+        font-size: 1.2rem;
+    }
+}
+
+/* Fade in flip animation */
+@keyframes fadeInFlip {
+    0% {
+        opacity: 0;
+        transform: perspective(1000px) rotateY(-90deg) translateZ(-50px);
+    }
+    100% {
+        opacity: 1;
+        transform: perspective(1000px) rotateY(0deg) translateZ(0);
+    }
+}
 }
 
 /* Reviews Section */
