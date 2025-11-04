@@ -48,8 +48,17 @@
                     <div class="title-underline"></div>
                     <p class="section-description">Những khoảnh khắc đáng nhớ tại vườn trái cây Ông Sang</p>
                 </div>
-                <div class="gallery-grid" id="galleryGrid">
-                    <!-- Gallery items will be loaded dynamically from images.json -->
+                <!-- Turn.js flipbook container -->
+                <div class="flipbook-wrapper">
+                    <div id="flipbook" class="flipbook">
+                        <!-- Pages will be loaded dynamically from images.json -->
+                    </div>
+                </div>
+                <!-- Navigation controls -->
+                <div class="flipbook-controls">
+                    <button id="prevBtn" class="flip-btn">← Trang trước</button>
+                    <span id="pageDisplay" class="page-display">Trang 1</span>
+                    <button id="nextBtn" class="flip-btn">Trang sau →</button>
                 </div>
             </div>
         </section>
