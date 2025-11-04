@@ -475,6 +475,13 @@ section {
     height: auto;
 }
 
+.gallery-error-message {
+    text-align: center;
+    color: var(--text-gray);
+    padding: var(--spacing-lg);
+    grid-column: 1 / -1;
+}
+
 /* Reviews Section */
 .reviews {
     background: linear-gradient(to bottom, var(--lightest-green), var(--lighter-orange));

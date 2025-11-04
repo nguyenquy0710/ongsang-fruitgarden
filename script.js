@@ -181,15 +181,16 @@ serviceCards.forEach(card => {
 
 // Load and render gallery from JSON
 async function loadGallery() {
+    const galleryGrid = document.getElementById('galleryGrid');
+    
+    if (!galleryGrid) {
+        console.error('Gallery grid element not found');
+        return;
+    }
+    
     try {
         const response = await fetch('gallery.json');
         const data = await response.json();
-        const galleryGrid = document.getElementById('galleryGrid');
-        
-        if (!galleryGrid) {
-            console.error('Gallery grid element not found');
-            return;
-        }
         
         // Clear existing content
         galleryGrid.innerHTML = '';
@@ -206,9 +207,7 @@ async function loadGallery() {
     } catch (error) {
         console.error('Error loading gallery:', error);
         // Show user-friendly error message
-        if (galleryGrid) {
-            galleryGrid.innerHTML = '<p style="text-align: center; color: var(--text-gray); padding: var(--spacing-lg);">Không thể tải thư viện hình ảnh. Vui lòng thử lại sau.</p>';
-        }
+        galleryGrid.innerHTML = '<p class="gallery-error-message">Không thể tải thư viện hình ảnh. Vui lòng thử lại sau.</p>';
     }
 }
 
@@ -252,8 +251,10 @@ function applyGalleryAnimations() {
                 }
             });
             
-            // Toggle current item - add class if not zoomed, remove if already zoomed
-            if (!isZoomed) {
+            // Toggle current item - add if not zoomed, remove if already zoomed
+            if (isZoomed) {
+                item.classList.remove('zoomed');
+            } else {
                 item.classList.add('zoomed');
             }
         });
