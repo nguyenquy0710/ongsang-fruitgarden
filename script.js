@@ -220,13 +220,6 @@ async function loadGallery() {
     }
 }
 
-// Helper function to escape HTML to prevent XSS
-function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
-
 // Helper function to validate hex color
 function isValidColor(color) {
     return /^#[0-9A-Fa-f]{6}$/.test(color);
@@ -235,10 +228,10 @@ function isValidColor(color) {
 // Create a gallery item element from image data
 function createGalleryItem(image) {
     // Validate and sanitize input data
-    const safeCategory = escapeHtml(image.category || '');
-    const safeDescription = escapeHtml(image.description || '');
-    const safeTitle = escapeHtml(image.title || '');
-    const safeEmoji = escapeHtml(image.emoji || '');
+    const safeCategory = String(image.category || '').slice(0, 50);
+    const safeDescription = String(image.description || '').slice(0, 200);
+    const safeTitle = String(image.title || '').slice(0, 100);
+    const safeEmoji = String(image.emoji || '').slice(0, 10);
     
     // Validate colors or use safe defaults
     const backgroundColor = isValidColor(image.backgroundColor) ? image.backgroundColor : '#e8f5e9';
@@ -250,16 +243,42 @@ function createGalleryItem(image) {
     item.setAttribute('data-category', safeCategory);
     item.setAttribute('title', safeDescription);
     
-    const svg = `
-        <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
-            <rect width="400" height="300" fill="${backgroundColor}" />
-            <circle cx="200" cy="150" r="60" fill="${circleColor}" />
-            <text x="200" y="170" font-size="50" text-anchor="middle">${safeEmoji}</text>
-            <text x="200" y="260" font-size="16" text-anchor="middle" fill="${textColor}">${safeTitle}</text>
-        </svg>
-    `;
+    // Create SVG using DOM methods for security
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', '0 0 400 300');
     
-    item.innerHTML = svg;
+    const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    rect.setAttribute('width', '400');
+    rect.setAttribute('height', '300');
+    rect.setAttribute('fill', backgroundColor);
+    
+    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    circle.setAttribute('cx', '200');
+    circle.setAttribute('cy', '150');
+    circle.setAttribute('r', '60');
+    circle.setAttribute('fill', circleColor);
+    
+    const emojiText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    emojiText.setAttribute('x', '200');
+    emojiText.setAttribute('y', '170');
+    emojiText.setAttribute('font-size', '50');
+    emojiText.setAttribute('text-anchor', 'middle');
+    emojiText.textContent = safeEmoji;
+    
+    const titleText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    titleText.setAttribute('x', '200');
+    titleText.setAttribute('y', '260');
+    titleText.setAttribute('font-size', '16');
+    titleText.setAttribute('text-anchor', 'middle');
+    titleText.setAttribute('fill', textColor);
+    titleText.textContent = safeTitle;
+    
+    svg.appendChild(rect);
+    svg.appendChild(circle);
+    svg.appendChild(emojiText);
+    svg.appendChild(titleText);
+    item.appendChild(svg);
+    
     return item;
 }
 
