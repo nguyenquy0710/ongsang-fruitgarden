@@ -190,6 +190,11 @@ async function loadGallery() {
     
     try {
         const response = await fetch('gallery.json');
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
         const data = await response.json();
         
         // Clear existing content
@@ -206,24 +211,51 @@ async function loadGallery() {
         
     } catch (error) {
         console.error('Error loading gallery:', error);
-        // Show user-friendly error message
-        galleryGrid.innerHTML = '<p class="gallery-error-message">Không thể tải thư viện hình ảnh. Vui lòng thử lại sau.</p>';
+        // Show user-friendly error message using textContent for security
+        const errorMsg = document.createElement('p');
+        errorMsg.className = 'gallery-error-message';
+        errorMsg.textContent = 'Không thể tải thư viện hình ảnh. Vui lòng thử lại sau.';
+        galleryGrid.innerHTML = '';
+        galleryGrid.appendChild(errorMsg);
     }
+}
+
+// Helper function to escape HTML to prevent XSS
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// Helper function to validate hex color
+function isValidColor(color) {
+    return /^#[0-9A-Fa-f]{6}$/.test(color);
 }
 
 // Create a gallery item element from image data
 function createGalleryItem(image) {
+    // Validate and sanitize input data
+    const safeCategory = escapeHtml(image.category || '');
+    const safeDescription = escapeHtml(image.description || '');
+    const safeTitle = escapeHtml(image.title || '');
+    const safeEmoji = escapeHtml(image.emoji || '');
+    
+    // Validate colors or use safe defaults
+    const backgroundColor = isValidColor(image.backgroundColor) ? image.backgroundColor : '#e8f5e9';
+    const circleColor = isValidColor(image.circleColor) ? image.circleColor : '#66bb6a';
+    const textColor = isValidColor(image.textColor) ? image.textColor : '#2e7d32';
+    
     const item = document.createElement('div');
     item.className = 'gallery-item';
-    item.setAttribute('data-category', image.category);
-    item.setAttribute('title', image.description);
+    item.setAttribute('data-category', safeCategory);
+    item.setAttribute('title', safeDescription);
     
     const svg = `
         <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
-            <rect width="400" height="300" fill="${image.backgroundColor}" />
-            <circle cx="200" cy="150" r="60" fill="${image.circleColor}" />
-            <text x="200" y="170" font-size="50" text-anchor="middle">${image.emoji}</text>
-            <text x="200" y="260" font-size="16" text-anchor="middle" fill="${image.textColor}">${image.title}</text>
+            <rect width="400" height="300" fill="${backgroundColor}" />
+            <circle cx="200" cy="150" r="60" fill="${circleColor}" />
+            <text x="200" y="170" font-size="50" text-anchor="middle">${safeEmoji}</text>
+            <text x="200" y="260" font-size="16" text-anchor="middle" fill="${textColor}">${safeTitle}</text>
         </svg>
     `;
     
