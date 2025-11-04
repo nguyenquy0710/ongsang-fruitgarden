@@ -451,29 +451,48 @@ section {
 
 .gallery-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: var(--spacing-md);
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-lg);
+    max-width: 1400px;
+    margin: 0 auto;
+    perspective: 1500px;
 }
 
 .gallery-item {
     position: relative;
     border-radius: var(--radius-lg);
     overflow: hidden;
-    box-shadow: 0 5px 20px var(--shadow);
-    transition: var(--transition);
+    box-shadow: 0 10px 30px var(--shadow);
     cursor: pointer;
-    background: var(--lightest-green);
+    background: var(--white);
+    transform-style: preserve-3d;
+    transition: transform 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
+    animation: fadeInFlip 0.8s ease-out backwards;
 }
 
+/* Staggered animation for gallery items */
+.gallery-item:nth-child(1) { animation-delay: 0.1s; }
+.gallery-item:nth-child(2) { animation-delay: 0.2s; }
+.gallery-item:nth-child(3) { animation-delay: 0.3s; }
+.gallery-item:nth-child(4) { animation-delay: 0.4s; }
+.gallery-item:nth-child(5) { animation-delay: 0.5s; }
+.gallery-item:nth-child(6) { animation-delay: 0.6s; }
+
+/* Page flip effect on hover */
 .gallery-item:hover {
-    transform: scale(1.05);
-    box-shadow: 0 10px 30px var(--shadow-hover);
+    transform: rotateY(-5deg) scale(1.05);
+    box-shadow: 0 15px 40px var(--shadow-hover);
+}
+
+/* Left side items flip differently */
+.gallery-item:nth-child(odd):hover {
+    transform: rotateY(5deg) scale(1.05);
 }
 
 .gallery-item.zoomed {
-    transform: scale(1.2);
-    z-index: 10;
-    box-shadow: 0 15px 40px var(--shadow-hover);
+    transform: scale(1.5);
+    z-index: 100;
+    box-shadow: 0 20px 60px var(--shadow-hover);
 }
 
 .gallery-item img {
@@ -482,6 +501,11 @@ section {
     height: auto;
     object-fit: cover;
     aspect-ratio: 4/3;
+    transition: transform 0.3s ease;
+}
+
+.gallery-item:hover img {
+    transform: scale(1.05);
 }
 
 .gallery-item svg {
@@ -501,6 +525,11 @@ section {
     text-align: center;
     font-size: 1rem;
     font-weight: 500;
+    transition: opacity 0.3s ease;
+}
+
+.gallery-item:hover .gallery-caption {
+    opacity: 0.9;
 }
 
 .image-placeholder {
@@ -518,6 +547,19 @@ section {
     color: var(--text-gray);
     padding: var(--spacing-lg);
     grid-column: 1 / -1;
+}
+
+/* Fade in flip animation */
+@keyframes fadeInFlip {
+    0% {
+        opacity: 0;
+        transform: perspective(1000px) rotateY(-90deg) translateZ(-50px);
+    }
+    100% {
+        opacity: 1;
+        transform: perspective(1000px) rotateY(0deg) translateZ(0);
+    }
+}
 }
 
 /* Reviews Section */
