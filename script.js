@@ -205,7 +205,10 @@ async function loadGallery() {
         
     } catch (error) {
         console.error('Error loading gallery:', error);
-        // Fallback: show error message or keep existing content
+        // Show user-friendly error message
+        if (galleryGrid) {
+            galleryGrid.innerHTML = '<p style="text-align: center; color: var(--text-gray); padding: var(--spacing-lg);">Không thể tải thư viện hình ảnh. Vui lòng thử lại sau.</p>';
+        }
     }
 }
 
@@ -249,8 +252,10 @@ function applyGalleryAnimations() {
                 }
             });
             
-            // Toggle current item
-            item.classList.toggle('zoomed');
+            // Toggle current item - add class if not zoomed, remove if already zoomed
+            if (!isZoomed) {
+                item.classList.add('zoomed');
+            }
         });
     });
 }
