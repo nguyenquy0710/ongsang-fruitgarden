@@ -95,6 +95,9 @@ document.addEventListener('DOMContentLoaded', () => {
         el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
         observer.observe(el);
     });
+    
+    // Load gallery when DOM is ready
+    loadGallery();
 });
 
 
@@ -197,8 +200,8 @@ async function loadGallery() {
         
         const data = await response.json();
         
-        // Clear existing content
-        galleryGrid.innerHTML = '';
+        // Clear existing content using replaceChildren for consistency
+        galleryGrid.replaceChildren();
         
         // Create and append gallery items
         data.images.forEach(image => {
@@ -211,16 +214,16 @@ async function loadGallery() {
         
     } catch (error) {
         console.error('Error loading gallery:', error);
-        // Show user-friendly error message using textContent for security
+        // Show user-friendly error message using DOM methods for security
         const errorMsg = document.createElement('p');
         errorMsg.className = 'gallery-error-message';
         errorMsg.textContent = 'Không thể tải thư viện hình ảnh. Vui lòng thử lại sau.';
-        galleryGrid.innerHTML = '';
-        galleryGrid.appendChild(errorMsg);
+        galleryGrid.replaceChildren(errorMsg);
     }
 }
 
 // Helper function to validate hex color
+// Note: Only validates 6-digit hex colors (e.g., #ff0000), not 3-digit format (e.g., #f00)
 function isValidColor(color) {
     return /^#[0-9A-Fa-f]{6}$/.test(color);
 }
@@ -316,6 +319,3 @@ function applyGalleryAnimations() {
 console.log('%c🍊 Vườn Trái Cây Ông Sang 🍊', 'color: #ff9800; font-size: 24px; font-weight: bold;');
 console.log('%cChào mừng bạn đến với website của chúng tôi!', 'color: #2e7d32; font-size: 16px;');
 console.log('%cTrải nghiệm thiên nhiên miệt vườn đích thực 🌳', 'color: #66bb6a; font-size: 14px;');
-
-// Load gallery when DOM is ready
-document.addEventListener('DOMContentLoaded', loadGallery);
