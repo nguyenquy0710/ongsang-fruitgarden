@@ -240,16 +240,17 @@ function applyGalleryAnimations() {
         
         // Re-apply click event for zoom effect
         item.addEventListener('click', () => {
-            item.style.transition = 'transform 0.3s ease';
-            const isZoomed = item.style.transform.includes('scale(1.2)');
+            const isZoomed = item.classList.contains('zoomed');
             
+            // Reset all other items
             galleryItems.forEach(otherItem => {
                 if (otherItem !== item) {
-                    otherItem.style.transform = 'scale(1)';
+                    otherItem.classList.remove('zoomed');
                 }
             });
             
-            item.style.transform = isZoomed ? 'scale(1)' : 'scale(1.2)';
+            // Toggle current item
+            item.classList.toggle('zoomed');
         });
     });
 }

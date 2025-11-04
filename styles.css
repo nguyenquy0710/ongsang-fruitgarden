@@ -463,6 +463,12 @@ section {
     box-shadow: 0 10px 30px var(--shadow-hover);
 }
 
+.gallery-item.zoomed {
+    transform: scale(1.2);
+    z-index: 10;
+    box-shadow: 0 15px 40px var(--shadow-hover);
+}
+
 .gallery-item svg {
     display: block;
     width: 100%;
