@@ -298,7 +298,7 @@ async function loadFlipbook() {
         // Show current page function
         function showPage(pageIndex) {
             pages.forEach((page, index) => {
-                page.classList.remove('active', 'flipping-out');
+                page.classList.remove('active', 'flipping-out', 'flipping-in');
                 if (index === pageIndex) {
                     page.classList.add('active');
                 } else if (index < pageIndex) {
@@ -324,8 +324,14 @@ async function loadFlipbook() {
         // Navigate to previous page
         function prevPage() {
             if (currentPage > 0) {
-                currentPage--;
-                showPage(currentPage);
+                // Add animation class to current page before going back
+                pages[currentPage].classList.add('flipping-in');
+                setTimeout(() => {
+                    currentPage--;
+                    showPage(currentPage);
+                    // Force removal of flipped class from the page we're going back to
+                    pages[currentPage].classList.remove('flipped');
+                }, 300);
             }
         }
 
