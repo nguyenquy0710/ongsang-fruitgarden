@@ -87,8 +87,8 @@ const observer = new IntersectionObserver((entries) => {
 
 // Observe all sections and cards
 document.addEventListener('DOMContentLoaded', () => {
-    // Add initial styles for animation
-    const animatedElements = document.querySelectorAll('.service-card, .review-card, .gallery-item, .info-card');
+    // Add initial styles for animation (gallery-item excluded as they're loaded dynamically)
+    const animatedElements = document.querySelectorAll('.service-card, .review-card, .info-card');
     animatedElements.forEach(el => {
         el.style.opacity = '0';
         el.style.transform = 'translateY(30px)';
@@ -97,26 +97,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// Gallery lightbox functionality (simple version)
-const galleryItems = document.querySelectorAll('.gallery-item');
-
-galleryItems.forEach(item => {
-    item.addEventListener('click', () => {
-        // Simple zoom effect on click
-        item.style.transition = 'transform 0.3s ease';
-        const isZoomed = item.style.transform === 'scale(1.2)';
-        
-        // Reset all other items
-        galleryItems.forEach(otherItem => {
-            if (otherItem !== item) {
-                otherItem.style.transform = 'scale(1)';
-            }
-        });
-        
-        // Toggle current item
-        item.style.transform = isZoomed ? 'scale(1)' : 'scale(1.2)';
-    });
-});
 
 // Active navigation link highlight
 function highlightActiveNavLink() {
@@ -199,7 +179,85 @@ serviceCards.forEach(card => {
     });
 });
 
+// Load and render gallery from JSON
+async function loadGallery() {
+    try {
+        const response = await fetch('gallery.json');
+        const data = await response.json();
+        const galleryGrid = document.getElementById('galleryGrid');
+        
+        if (!galleryGrid) {
+            console.error('Gallery grid element not found');
+            return;
+        }
+        
+        // Clear existing content
+        galleryGrid.innerHTML = '';
+        
+        // Create and append gallery items
+        data.images.forEach(image => {
+            const galleryItem = createGalleryItem(image);
+            galleryGrid.appendChild(galleryItem);
+        });
+        
+        // Re-apply intersection observer for new items
+        applyGalleryAnimations();
+        
+    } catch (error) {
+        console.error('Error loading gallery:', error);
+        // Fallback: show error message or keep existing content
+    }
+}
+
+// Create a gallery item element from image data
+function createGalleryItem(image) {
+    const item = document.createElement('div');
+    item.className = 'gallery-item';
+    item.setAttribute('data-category', image.category);
+    item.setAttribute('title', image.description);
+    
+    const svg = `
+        <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+            <rect width="400" height="300" fill="${image.backgroundColor}" />
+            <circle cx="200" cy="150" r="60" fill="${image.circleColor}" />
+            <text x="200" y="170" font-size="50" text-anchor="middle">${image.emoji}</text>
+            <text x="200" y="260" font-size="16" text-anchor="middle" fill="${image.textColor}">${image.title}</text>
+        </svg>
+    `;
+    
+    item.innerHTML = svg;
+    return item;
+}
+
+// Apply animations to gallery items
+function applyGalleryAnimations() {
+    const galleryItems = document.querySelectorAll('.gallery-item');
+    galleryItems.forEach(item => {
+        item.style.opacity = '0';
+        item.style.transform = 'translateY(30px)';
+        item.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(item);
+        
+        // Re-apply click event for zoom effect
+        item.addEventListener('click', () => {
+            item.style.transition = 'transform 0.3s ease';
+            const isZoomed = item.style.transform.includes('scale(1.2)');
+            
+            galleryItems.forEach(otherItem => {
+                if (otherItem !== item) {
+                    otherItem.style.transform = 'scale(1)';
+                }
+            });
+            
+            item.style.transform = isZoomed ? 'scale(1)' : 'scale(1.2)';
+        });
+    });
+}
+
 // Console message
 console.log('%c🍊 Vườn Trái Cây Ông Sang 🍊', 'color: #ff9800; font-size: 24px; font-weight: bold;');
 console.log('%cChào mừng bạn đến với website của chúng tôi!', 'color: #2e7d32; font-size: 16px;');
 console.log('%cTrải nghiệm thiên nhiên miệt vườn đích thực 🌳', 'color: #66bb6a; font-size: 14px;');
+
+// Load gallery when DOM is ready
+document.addEventListener('DOMContentLoaded', loadGallery);
