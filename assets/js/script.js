@@ -144,7 +144,8 @@ window.addEventListener('scroll', () => {
     const hero = document.querySelector('.hero');
     if (hero) {
         const scrolled = window.pageYOffset;
-        hero.style.transform = `translateY(${scrolled * 0.5}px)`;
+        // console.info(`scroll -> .hero -> transform: translateY(${scrolled * 0.5}px)`);
+        // hero.style.transform = `translateY(${scrolled * 0.5}px)`;
     }
 });
 
