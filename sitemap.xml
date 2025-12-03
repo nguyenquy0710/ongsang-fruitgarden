@@ -8,46 +8,6 @@
         <priority>1.0</priority>
     </url>
     
-    <!-- Trang chủ với anchor home -->
-    <url>
-        <loc>https://nguyenquy0710.github.io/ongsang-fruitgarden/index.html</loc>
-        <lastmod>2024-12-03</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>1.0</priority>
-    </url>
-    
-    <!-- Section Về Chúng Tôi -->
-    <url>
-        <loc>https://nguyenquy0710.github.io/ongsang-fruitgarden/index.html#about</loc>
-        <lastmod>2024-12-03</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    
-    <!-- Section Dịch Vụ -->
-    <url>
-        <loc>https://nguyenquy0710.github.io/ongsang-fruitgarden/index.html#services</loc>
-        <lastmod>2024-12-03</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.9</priority>
-    </url>
-    
-    <!-- Section Đánh Giá -->
-    <url>
-        <loc>https://nguyenquy0710.github.io/ongsang-fruitgarden/index.html#reviews</loc>
-        <lastmod>2024-12-03</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.7</priority>
-    </url>
-    
-    <!-- Section Liên Hệ -->
-    <url>
-        <loc>https://nguyenquy0710.github.io/ongsang-fruitgarden/index.html#contact</loc>
-        <lastmod>2024-12-03</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    
     <!-- Trang Thư Viện Hình Ảnh -->
     <url>
         <loc>https://nguyenquy0710.github.io/ongsang-fruitgarden/gallery.html</loc>
