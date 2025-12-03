@@ -3,4 +3,4 @@ User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: https://nguyenquy0710.github.io/ongsang-fruitgarden/sitemap.xml
+Sitemap: https://gist.quyit.id.vn/ongsang-fruitgarden/sitemap.xml
