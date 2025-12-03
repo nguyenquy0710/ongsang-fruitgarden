@@ -1,0 +1,6 @@
+# robots.txt for Vườn Trái Cây Ông Sang
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://nguyenquy0710.github.io/ongsang-fruitgarden/sitemap.xml
