@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <!-- Trang chủ -->
+    <url>
+        <loc>https://nguyenquy0710.github.io/ongsang-fruitgarden/</loc>
+        <lastmod>2024-12-03</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>1.0</priority>
+    </url>
+    
+    <!-- Trang Thư Viện Hình Ảnh -->
+    <url>
+        <loc>https://nguyenquy0710.github.io/ongsang-fruitgarden/gallery.html</loc>
+        <lastmod>2024-12-03</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+</urlset>
